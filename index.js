@@ -3,6 +3,11 @@ const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
 
+// LANGUAGE NONSENSE
+const tracery = require('tracery-grammar');
+const grammar = require('./language/grammar.js');
+const nlp = require('compromise');
+
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.commands = new Collection();
