@@ -10,8 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/translate": "^8.0.2",
     "compromise": "^14.10.1",
     "discord.js": "^14.9.0",
+    "mstranslator": "^3.0.0",
     "tracery-grammar": "^2.7.4"
   },
   "devDependencies": {
