@@ -8,7 +8,7 @@ const {
 
 // Language
 const tracery = require('tracery-grammar');
-const grammar = require('./language/grammarRps.js');
+const grammar = require('../../language/grammarRps.js');
 const nlp = require('compromise');
 
 module.exports = {
