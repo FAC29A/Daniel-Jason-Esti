@@ -6,6 +6,11 @@ const {
   ComponentType,
 } = require("discord.js");
 
+// Language
+const tracery = require('tracery-grammar');
+const grammar = require('./language/grammar.js');
+const nlp = require('compromise');
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("rps")
