@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require("discord.js");
 
 // Language
 const tracery = require('tracery-grammar');
-const grammar = require('./language/grammar.js');
+const grammar = require('./language/grammarTranslate.js');
 const nlp = require('compromise');
 
 const MsTranslator = require("mstranslator");
