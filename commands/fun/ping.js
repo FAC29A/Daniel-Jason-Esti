@@ -12,6 +12,6 @@ module.exports = {
 	async execute (interaction) {
 		const outputPossible = tracery.createGrammar(grammar.ping);
 		const outputChoose = outputPossible.flatten('#ping#');
-		await interaction.reply(outputChoose);
+		await interaction.reply(`${outputChoose}`);
 	},
 };

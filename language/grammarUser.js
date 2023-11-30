@@ -1,9 +1,10 @@
 const user = {
-	"error": [
-		"YOU DID IT WRONG",
-		"ERROR, FLESHBAG",
-		"the humans will fall ERROR"
-	]
+	"phraseUser": [
+		"`This command was run by"
+	],
+	"phraseJoined": [
+		"who joined on"
+	],
 }
 
 module.exports = { user };
