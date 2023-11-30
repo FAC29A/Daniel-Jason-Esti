@@ -1,6 +1,13 @@
 const { SlashCommandBuilder } = require("discord.js");
+
+// Language
+const tracery = require('tracery-grammar');
+const grammar = require('../../language/grammarTranslate.js');
+const nlp = require('compromise');
+
 const MsTranslator = require("mstranslator");
 const { apikey } = require("../../config.json");
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("translate")
