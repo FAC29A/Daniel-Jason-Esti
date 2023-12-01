@@ -14,8 +14,10 @@ const nlp = require('compromise');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("rps")
-    .setDescription(" Starts a Rock, Paper or Scisors game."),
-  async execute(interaction) {
+    .setDescription("Starts a Rock, Paper or Scisors game."),
+  
+	//buttons
+	async execute(interaction) {
     const rockButton = new ButtonBuilder()
       .setLabel("👊")
       .setStyle(ButtonStyle.Primary)
@@ -36,9 +38,14 @@ module.exports = {
       paperButton,
       scissorsButton
     );
+		
+		//Create Lexicon
+		const lexicon = tracery.createGrammar(grammar.rps);
+		const lexChallenge = lexicon.flatten('#challenge#');
 
+		//Challenge Message
     const game = await interaction.reply({
-      content: `You have challenged the bot to Rock, Paper or Scissors!`,
+      content: `${lexChallenge}`,
       components: [actionRow],
       ephemeral: true,
     });
@@ -47,6 +54,7 @@ module.exports = {
       ComponentType: ComponentType.Button,
     });
 
+		//Record Player Move
     collector.on("collect", async (i) => {
       let result;
       if (i.customId === "rock-button") {
@@ -63,12 +71,14 @@ module.exports = {
       actionRow.components.forEach((button) => button.setDisabled(true));
       i.editReply({ content: i.content, components: [actionRow] });
     });
-
+		
+		//Execute Game
     function botRPS(playerChoice, player) {
       const options = ["rock", "paper", "scissors"];
 
       const botChoice = options[Math.floor(Math.random() * 3)];
 
+			//Game Result
       switch (playerChoice) {
         case "rock":
           if (botChoice === "rock") {
@@ -103,3 +113,8 @@ module.exports = {
     }
   },
 };
+
+/* 
+const lexicon = tracery.createGrammar(grammar.rps);
+const NAME = lexicon.flatten('#SYMBOL#');
+*/
