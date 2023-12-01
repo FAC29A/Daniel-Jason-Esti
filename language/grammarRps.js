@@ -3,17 +3,26 @@ const rps = {
 		"You have challenged the bot to Rock, Paper or Scissors!"
 	],
 
-	"objectRock": ["rock"],
-	"objectPaper": ["paper"],
-	"objectScissors": ["scissors"],
+	"rock": [
+		"a trebuchet",
+		"pebbles",
+		"a rock"
+	],
+	"paper": [
+		"a hardback book",
+		"some paper",
+		"a stack of post-it notes"
+	],
+	"scissors": [
+		"the blade",
+		"scissors",
+		"rusty garden shears"
+	],
 
-	"choicePlayer": [""],
-	"choiceBot": [""],
+	"resultBot": ["Bot wins!"],
+	"resultTie": ["It's a tie!"],
+	"resultPlayer": ["You win!"],
 
-	"resultBot": [""],
-	"resultTie": [""],
-	"resultPlayer": [""],
-	
 	"systemInvalid": [
 		"Invalid choice. Please choose rock, paper, or scissors."
 	],
