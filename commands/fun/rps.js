@@ -14,8 +14,10 @@ const nlp = require('compromise');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("rps")
-    .setDescription(" Starts a Rock, Paper or Scisors game."),
-  async execute(interaction) {
+    .setDescription("Starts a Rock, Paper or Scisors game."),
+  
+	//buttons
+	async execute(interaction) {
     const rockButton = new ButtonBuilder()
       .setLabel("👊")
       .setStyle(ButtonStyle.Primary)
@@ -36,9 +38,14 @@ module.exports = {
       paperButton,
       scissorsButton
     );
+		
+		//Create Lexicon
+		const lexicon = tracery.createGrammar(grammar.rps);
 
+		//Challenge Message
+		const lexChallenge = lexicon.flatten('#challenge#');
     const game = await interaction.reply({
-      content: `You have challenged the bot to Rock, Paper or Scissors!`,
+      content: `${lexChallenge}`,
       components: [actionRow],
       ephemeral: true,
     });
@@ -47,59 +54,74 @@ module.exports = {
       ComponentType: ComponentType.Button,
     });
 
+		//Record Player Move
     collector.on("collect", async (i) => {
       let result;
+			const playerChose = "";
       if (i.customId === "rock-button") {
-        result = botRPS("rock");
+				playerChose = "rock";
       } else if (i.customId === "paper-button") {
-        result = botRPS("paper");
+				playerChose = "paper";
       } else {
-        result = botRPS("scissors");
-      }
+				playerChose = "scissor";
+      };
+			result = botRPS(`${playerChose}`);
 
       await i.deferUpdate();
       await i.editReply(result);
 
       actionRow.components.forEach((button) => button.setDisabled(true));
-      i.editReply({ content: i.content, components: [actionRow] });
+      i.editReply({
+				content: i.content,
+				components: [actionRow]
+			});
     });
-
+		
+		//Execute Game
     function botRPS(playerChoice, player) {
+			let message = "You chose ";
+			message += lexicon.flatten(`#${playerChoice}#`);
+			message += "... "
+
       const options = ["rock", "paper", "scissors"];
-
+			message += "Meanwhile, the bot has chosen ";
       const botChoice = options[Math.floor(Math.random() * 3)];
+			message += lexicon.flatten(`#${botChoice}`);
 
+			//Game Result
+			let result = "";
       switch (playerChoice) {
         case "rock":
-          if (botChoice === "rock") {
-            return "It's a tie!";
-          } else if (botChoice === "paper") {
-            return "Bot wins!";
-          } else {
-            return "You win!";
-          }
+          botChoice === "rock" ?
+            result = "resultTie" :
+          	botChoice === "paper" ?
+							result = "resultBot" :
+							result = "resultPlayer";
           break;
         case "paper":
-          if (botChoice === "rock") {
-            return "You win!";
-          } else if (botChoice === "paper") {
-            return "It's a tie!";
-          } else {
-            return "Bot wins!";
-          }
+          botChoice === "rock" ?
+            result = "resultPlayer" :
+          	botChoice === "paper" ?
+            	result = "resultTie" :
+          		result = "resultBot";
           break;
         case "scissors":
-          if (botChoice === "rock") {
-            return "Bot wins!";
-          } else if (botChoice === "paper") {
-            return "You win!";
-          } else {
-            return "It's a tie!";
-          }
+          botChoice === "rock" ?
+						result = "resultBot" : 
+						botChoice === "paper"?
+							result = "resultPlayer" : 
+							result = "resultTie";
           break;
         default:
           return "Invalid choice. Please choose rock, paper, or scissors.";
       }
+			message += (" " + lexicon.flatten(`#${result}`));
+			return message;
     }
   },
 };
+
+/* 
+const lexicon = tracery.createGrammar(grammar.rps);
+const NAME = lexicon.flatten('#SYMBOL#');
+*/
