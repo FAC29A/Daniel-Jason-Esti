@@ -1,3 +1,4 @@
+// Import Discord
 const {
   SlashCommandBuilder,
   ButtonBuilder,
@@ -6,18 +7,21 @@ const {
   ComponentType,
 } = require("discord.js");
 
-// Language
+// Import Language
 const tracery = require('tracery-grammar');
 const grammar = require('../../language/grammarRps.js');
 const nlp = require('compromise');
 
+// Import OpenAI
+
+// Slash Command
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("rps")
     .setDescription("Starts a Rock, Paper or Scisors game."),
   
-	//buttons
 	async execute(interaction) {
+		// Create Buttons
     const rockButton = new ButtonBuilder()
       .setLabel("👊")
       .setStyle(ButtonStyle.Primary)
@@ -33,28 +37,32 @@ module.exports = {
       .setStyle(ButtonStyle.Primary)
       .setCustomId("scissors-button");
 
+		// Create Button Bar
     const actionRow = new ActionRowBuilder().addComponents(
       rockButton,
       paperButton,
       scissorsButton
     );
 		
-		//Create Lexicon
+		// Create Lexicon
 		const lexicon = tracery.createGrammar(grammar.rps);
 
-		//Challenge Message
+		// Create Challenge Message & Bot Persona
+		await interaction.defer();
+
 		const lexChallenge = lexicon.flatten('#challenge#');
+		const lexPersona = lexicon.flatten('#persona#');
+		
     const game = await interaction.reply({
-      content: `${lexChallenge}`,
+      content: `${lexChallenge} This bot seems a bit ${lexPersona}.`,
       components: [actionRow],
       ephemeral: true,
     });
 
+		//Record Player Move
     const collector = game.createMessageComponentCollector({
       ComponentType: ComponentType.Button,
     });
-
-		//Record Player Move
     collector.on("collect", async (i) => {
       let result;
 			const playerChose = "";
@@ -68,7 +76,7 @@ module.exports = {
 			result = botRPS(`${playerChose}`);
 
       await i.deferUpdate();
-      await i.editReply(result);
+      await i.editReply(gameData.story);
 
       actionRow.components.forEach((button) => button.setDisabled(true));
       i.editReply({
@@ -77,18 +85,20 @@ module.exports = {
 			});
     });
 		
-		//Execute Game
+		//Run Game
     function botRPS(playerChoice, player) {
-			let message = "You chose ";
-			message += lexicon.flatten(`#${playerChoice}#`);
-			message += "... "
+			let message;
+			// Flavour for Player Choice
+			const lexChosePlayer = lexicon.flatten(`#${playerChoice}#`);
 
+			// Define Bot's Options
       const options = ["rock", "paper", "scissors"];
-			message += "Meanwhile, the bot has chosen ";
       const botChoice = options[Math.floor(Math.random() * 3)];
-			message += lexicon.flatten(`#${botChoice}`);
+			// Flavour for Bot's Choice
+			const lexChoseBot = lexicon.flatten(`#${botChoice}`);
+			message += "";
 
-			//Game Result
+			//Define Result
 			let result = "";
       switch (playerChoice) {
         case "rock":
@@ -115,13 +125,22 @@ module.exports = {
         default:
           return "Invalid choice. Please choose rock, paper, or scissors.";
       }
-			message += (" " + lexicon.flatten(`#${result}`));
-			return message;
+			// Flavour the Result
+			const lexResult = lexicon.flatten(`#${result}`);
+
+			// Build & Return the Message
+			message = `
+				You chose ${lexChosePlayer}.
+				The bot chose ${lexChoseBot}.
+				A mighty battle ensued!
+				Your ${lexChosePlayer} ${lexResult} ${lexChoseBot}
+			`
+			let gameData = {
+				story: message,
+				result: result
+			}
+
+			return gameData;
     }
   },
 };
-
-/* 
-const lexicon = tracery.createGrammar(grammar.rps);
-const NAME = lexicon.flatten('#SYMBOL#');
-*/
